@@ -86,10 +86,11 @@ def _create_singleSession(dataDict, master_config, interpMode, pipeline_name):
             doDenoise = False
         else:
             doDenoise = True
-    useEMSP = False
-    if len(dataDict['EMSP']) > 0:
-        useEMSP = True
-    sessionWorkflow = generate_single_session_template_WF(project, subject, session, onlyT1, hasPDs, hasFLs, master_config,
+    useEMSP=False
+    if len( dataDict['EMSP']) >0:
+        useEMSP =True
+    print("BadT2 = {0} that will set the onlyT1 true".format(dataDict['BadT2']))
+    sessionWorkflow = generate_single_session_template_WF(project, subject, session, onlyT1, master_config,
                                                           phase=master_config['workflow_phase'],
                                                           interpMode=interpMode,
                                                           pipeline_name=pipeline_name,
@@ -154,7 +155,7 @@ def createAndRun(sessions, environment, experiment, pipeline, cluster, useSentin
                 print("This T2 is not going to be used for JointFusion")
                 print("This T2 is not going to be used for JointFusion")
                 print("This T2 is not going to be used for JointFusion")
-                print((_dict['T2s']))
+                print(_dict['T2s'])
                 _dict['BadT2'] = True
             _dict['PDs'] = database.getFilenamesByScantype(session, ['PD-15', 'PD-30'])
             _dict['FLs'] = database.getFilenamesByScantype(session, ['FL-15', 'FL-30'])
