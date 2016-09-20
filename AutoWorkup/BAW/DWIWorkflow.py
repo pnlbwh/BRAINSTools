@@ -35,14 +35,9 @@ def ExtractBRAINFromHead(RawScan, BrainLabels):
     assert os.path.exists(BrainLabels), "File not found: %s" % BrainLabels
     headImage = sitk.ReadImage(RawScan)
     labelsMap = sitk.ReadImage(BrainLabels)
-    rs = sitk.ResampleImageFilter()
-    rs.SetInterpolator(sitk.sitkLinear)
-    rs.SetTransform(sitk.Transform(3, sitk.sitkIdentity))
-    rs.SetReferenceImage(labelsMap)
-    resampledHead = rs.Execute(headImage)
-
-    label_mask = labelsMap > 0
-    brainImage = sitk.Cast(resampledHead, sitk.sitkInt16) * sitk.Cast(label_mask, sitk.sitkInt16)
+    label_mask = labelsMap>0
+    label_mask = sitk.Resample(label_mask, headImage)
+    brainImage = sitk.Cast(headImage,sitk.sitkInt16) * sitk.Cast(label_mask,sitk.sitkInt16)
     outputVolume = os.path.realpath('T2Stripped.nrrd')
     sitk.WriteImage(brainImage, outputVolume)
     return outputVolume
@@ -106,10 +101,10 @@ def ForceDCtoID(inputVolume):
 
 
 def pickCompositeTransfromFromList(composite_transform_as_list):
-    if isinstance(composite_transform_as_list, str):
-        return composite_transform_as_list;
-    return composite_transform_as_list[0]
-
+    returnVal=composite_transform_as_list[0]
+    if isinstance(composite_transform_as_list, basestring):
+        returnVal=composite_transform_as_list
+    return returnVal
 
 def RestoreDCFromSavedMatrix(inputVolume, inputDirectionCosine):
     import os
@@ -449,7 +444,7 @@ def runMainWorkflow(DWI_scan, T2_scan, labelMap_image, BASE_DIR, dataSink_DIR):
     DWIWorkflow.connect(outputsSpec, 'Lambda2Image', DWIDataSink, 'Outputs.@Lambda2Image')
     DWIWorkflow.connect(outputsSpec, 'Lambda3Image', DWIDataSink, 'Outputs.@Lambda3Image')
 
-    DWIWorkflow.write_graph()
+    #DWIWorkflow.write_graph()
     DWIWorkflow.run()
 
 

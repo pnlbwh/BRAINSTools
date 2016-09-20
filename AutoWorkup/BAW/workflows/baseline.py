@@ -295,6 +295,10 @@ def generate_single_session_template_WF(projectid, subjectid, sessionid, onlyT1,
     Run autoworkup on a single sessionid
 
     This is the main function to call when processing a data set with T1 & T2
+    """
+    Run autoworkup on a single sessionid
+
+    This is the main function to call when processing a data set with T1 & T2
     data.  ExperimentBaseDirectoryPrefix is the base of the directory to place results, T1Images & T2Images
     are the lists of images to be used in the auto-workup. atlas_fname_wpath is
     the path and filename of the atlas to use.
@@ -979,8 +983,6 @@ def generate_single_session_template_WF(projectid, subjectid, sessionid, onlyT1,
 
     if 'jointfusion_2015_wholebrain' in master_config['components']:  ## HACK Do JointFusion labeling
         ## HACK FOR NOW SHOULD BE MORE ELEGANT FROM THE .config file
-        if badT2:
-            onlyT1 = True
         if onlyT1:
             print("T1 only processing in jointFusion")
         else:

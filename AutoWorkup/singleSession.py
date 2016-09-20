@@ -94,7 +94,6 @@ def _create_singleSession(dataDict, master_config, interpMode, pipeline_name):
                                                           interpMode=interpMode,
                                                           pipeline_name=pipeline_name,
                                                           doDenoise=doDenoise,
-                                                          badT2=dataDict['BadT2'],
                                                           useEMSP=useEMSP)
     sessionWorkflow.base_dir = master_config['cachedir']
 

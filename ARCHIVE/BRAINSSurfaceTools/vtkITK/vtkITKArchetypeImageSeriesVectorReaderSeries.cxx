@@ -18,7 +18,7 @@
 // VTK includes
 #include <vtkCommand.h>
 #include <vtkDataArray.h>
-#include <vtkDataArrayTemplate.h>
+#include <vtkAOSDataArrayTemplate.h>
 #include <vtkImageData.h>
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
@@ -37,13 +37,13 @@ vtkStandardNewMacro(vtkITKArchetypeImageSeriesVectorReaderSeries);
 
 namespace {
 
-template <typename T>
-vtkDataArrayTemplate<T>* DownCast(vtkAbstractArray* a)
+template <class T>
+vtkAOSDataArrayTemplate<T>* DownCast(vtkAbstractArray* a)
 {
 #if VTK_MAJOR_VERSION <= 5
-  return static_cast<vtkDataArrayTemplate<T>*>(a);
+  return static_cast<vtkAOSDataArrayTemplate<T>*>(a);
 #else
-  return vtkDataArrayTemplate<T>::FastDownCast(a);
+  return vtkAOSDataArrayTemplate<T>::FastDownCast(a);
 #endif
 }
 
@@ -105,7 +105,7 @@ void vtkITKExecuteDataFromSeriesVector(
   void *ptr = static_cast<void *> (PixelContainer->GetBufferPointer());
   DownCast<T>(data->GetPointData()->GetScalars())
     ->SetVoidArray(ptr, PixelContainer->Size(), 0,
-                   vtkDataArrayTemplate<T>::VTK_DATA_ARRAY_DELETE);
+                   vtkAOSDataArrayTemplate<T>::VTK_DATA_ARRAY_DELETE);
   PixelContainer->ContainerManageMemoryOff();
 }
 

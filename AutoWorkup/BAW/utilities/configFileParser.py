@@ -168,27 +168,16 @@ def parseExperiment(parser, workflow_phase):
         if 'jointfusion_2015_wholebrain' in retval['components']:
             print("'jointFusion_2015_wholebrain' will be run with a specified 'jointfusion_atlas_db_base'.")
             """ HACK: warp_atlas_to_subject is coupled with jointFusion????"""
-            retval['jointfusion_atlas_db_base'] = validatePath(
-                getASCIIFromParser(parser, 'EXPERIMENT', 'JointFusion_ATLAS_DB_BASE'),
-                allow_empty=False,
-                isDirectory=False)
-            retval['labelmap_colorlookup_table'] = validatePath(
-                getASCIIFromParser(parser, 'EXPERIMENT', 'LABELMAP_COLORLOOKUP_TABLE'),
-                allow_empty=False,
-                isDirectory=False)
-            retval['relabel2lobes_filename'] = validatePath(
-                getASCIIFromParser(parser, 'EXPERIMENT', 'RELABEL2LOBES_FILENAME'),
-                allow_empty=True,
-                isDirectory=False)
-        if 'edge_prediction' in retval['components']:
-            retval['gm_edge_classifier'] = validatePath(
-                getASCIIFromParser(parser, 'EXPERIMENT', 'GM_EDGE_CLASSIFIER'),
-                allow_empty=True,
-                isDirectory=False)
-            retval['wm_edge_classifier'] = validatePath(
-                getASCIIFromParser(parser, 'EXPERIMENT', 'WM_EDGE_CLASSIFIER'),
-                allow_empty=True,
-                isDirectory=False)
+            retval['jointfusion'] = parser.get('EXPERIMENT', 'JointFusion')
+            retval['jointfusion_atlas_db_base'] = validatePath(parser.get('EXPERIMENT', 'JointFusion_ATLAS_DB_BASE'),
+                                                       allow_empty=False,
+                                                       isDirectory=False)
+            retval['labelmap_colorlookup_table'] = validatePath(parser.get('EXPERIMENT', 'LABELMAP_COLORLOOKUP_TABLE'),
+                                                       allow_empty=False,
+                                                       isDirectory=False)
+            retval['relabel2lobes_filename'] = validatePath(parser.get('EXPERIMENT', 'RELABEL2LOBES_FILENAME'),
+                                                       allow_empty=True,
+                                                       isDirectory=False)
         retval['workflow_phase'] = workflow_phase
     return retval
 

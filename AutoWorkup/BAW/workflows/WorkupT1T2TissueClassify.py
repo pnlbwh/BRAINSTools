@@ -172,8 +172,8 @@ def CreateTissueClassifyWorkflow(WFname, master_config, InterpolationMode, UseRe
     tissueClassifyWF.connect(makeOutImageList, 'imageTypeList', BABCext, 'inputVolumeTypes')
     tissueClassifyWF.connect(makeOutImageList, 'outImageList', BABCext, 'outputVolumes')
     BABCext.inputs.debuglevel = 0
-    BABCext.inputs.useKNN = True
-    BABCext.inputs.purePlugsThreshold = 0.1  # New feature to allow for pure plug processing and improvements.
+    BABCext.inputs.useKNN = False
+    BABCext.inputs.purePlugsThreshold = 0.1  #New feature to allow for pure plug processing and improvements.
     BABCext.inputs.maxIterations = 2
     BABCext.inputs.maxBiasDegree = 0
     BABCext.inputs.filterIteration = 3
