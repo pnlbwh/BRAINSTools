@@ -1,0 +1,190 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>flip_labels module &#8212; Data_Preparation 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Eye Distance module" href="Eye Distance.html" />
+
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+
+
+          <div class="body" role="main">
+
+  <div class="section" id="module-flip_labels">
+<span id="flip-labels-module"></span><h1>flip_labels module<a class="headerlink" href="#module-flip_labels" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="flip_labels.getDataframeFromFile">
+<code class="descclassname">flip_labels.</code><code class="descname">getDataframeFromFile</code><span class="sig-paren">(</span><em>filePath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flip_labels.html#getDataframeFromFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flip_labels.getDataframeFromFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dataframe from the original lookup table’s file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filePath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the name of the file containing the original lookup table</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns df:</th><td class="field-body">the dataframe representing the lookup table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flip_labels.removeLeftRightExpressions">
+<code class="descclassname">flip_labels.</code><code class="descname">removeLeftRightExpressions</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flip_labels.html#removeLeftRightExpressions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flip_labels.removeLeftRightExpressions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all right or left indicators in the dataframe</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>pandas.DataFrame</em>) – the original dataframe of representing the image’s lookup table</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Returns newLabelList:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">the new list of labels for parts of the brain after having removed any strings that indicate the part being on the left or right</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Returns newIndexByOldIndex:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">a dictionary whose key is the old index for a part of the brain and the value is the new index for that part</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flip_labels.rewriteDataframe">
+<code class="descclassname">flip_labels.</code><code class="descname">rewriteDataframe</code><span class="sig-paren">(</span><em>df</em>, <em>newLabelList</em>, <em>newIndexByOldIndex</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flip_labels.html#rewriteDataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flip_labels.rewriteDataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrites the dataframe defining the image’s lookup table after</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<em>pandas.DataFrame</em>) – the df to rewrite</li>
+<li><strong>newLabelList</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – the new labels for the image now that the left/right indications have been removed</li>
+<li><strong>newIndexByOldIndex</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the mapping of old indices to new indices so that the left and right versions of a part are the same index</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flip_labels.rewriteImageIndices">
+<code class="descclassname">flip_labels.</code><code class="descname">rewriteImageIndices</code><span class="sig-paren">(</span><em>imageFileName</em>, <em>imageOutputPath</em>, <em>newIndexByOldIndex</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flip_labels.html#rewriteImageIndices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flip_labels.rewriteImageIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrite the image so that its labels are identified by the new indices such that we have gotten rid of about half the indices</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>imageFileName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the name of the file in which the original image is found</li>
+<li><strong>imageOutputPath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the name of the file to which the new image is to be written</li>
+<li><strong>newIndexByOldIndex</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the mapping of old indices to new indices</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="flip_labels.writeLookupTableToFile">
+<code class="descclassname">flip_labels.</code><code class="descname">writeLookupTableToFile</code><span class="sig-paren">(</span><em>df</em>, <em>LUT_OutputName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flip_labels.html#writeLookupTableToFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flip_labels.writeLookupTableToFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the dataframe containing the lookup table to a tab separated file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<em>pandas.DataFrame</em>) – the dataframe containing the lookup table</li>
+<li><strong>LUT_OutputName</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the name of the file to write the new lookup table</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Data_Preparation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Eye Distance.html">Eye Distance module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">flip_labels module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Eye Distance.html" title="previous chapter">Eye Distance module</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+
+      |
+      <a href="_sources/flip_labels.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+  </body>
+</html>
