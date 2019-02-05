@@ -1,108 +1,6 @@
-import pandas as pd
-import os
-from os.path import dirname
-import SimpleITK as sitk
-import numpy as np
-import itk
-import matplotlib.pyplot as plt
-import re
-import sys
 import argparse
 
-def getDataframeFromFile(filePath):
-    """Get the dataframe from the original lookup table's file
-
-    :param filePath: the name of the file containing the original lookup table
-    :type filePath: str
-
-    :returns df: the dataframe representing the lookup table
-    :type dataframe: pandas.DataFrame
-    """
-    # Create a data frame from the file containing the lookup table
-    df = pd.read_table(filePath, error_bad_lines=False, comment="#")
-    return df
-
-
-def removeLeftRightExpressions(df):
-    """Remove all right or left indicators in the dataframe
-
-    :param df: the original dataframe of representing the image's lookup table
-    :type df: pandas.DataFrame
-
-    :returns newLabelList: the new list of labels for parts of the brain after having removed any strings that indicate the part being on the left or right
-    :type newLabelList: list
-    :returns newIndexByOldIndex: a dictionary whose key is the old index for a part of the brain and the value is the new index for that part
-    :type newIndexByOldIndex: dict
-    """
-    newLabelList = []
-    indexByLabel = {}
-    newIndexByOldIndex = {}
-    for index, row in df.iterrows():
-        label = row['Label']
-        label = re.sub(r'Left|Right|left|right|lh|rh|', '', label)
-        label = re.sub(r'^L[A-Z].*|^R[A-Z].*', label[1:], label)
-        label = re.sub(r'^-', '', label)
-
-        if label not in indexByLabel:
-            # If this label has not been encountered before, its old index and its new index are the same
-            newIndexByOldIndex[row['No.']] = row['No.']
-            # If a right or left indicator was removed from a label, rewrite the index of the label
-            indexByLabel[label] = row['No.']
-        else:
-            # If a label is changed and matches another label, make its index match the index of the other label
-            newIndexByOldIndex[row['No.']] = indexByLabel[label]
-        newLabelList.append(label)
-    return newLabelList, newIndexByOldIndex
-
-
-def rewriteDataframe(df, newLabelList, newIndexByOldIndex):
-    """Rewrites the dataframe defining the image's lookup table after
-
-    :param df: the df to rewrite
-    :type df: pandas.DataFrame
-    :param newLabelList: the new labels for the image now that the left/right indications have been removed
-    :type newLabelList: list
-    :param newIndexByOldIndex: the mapping of old indices to new indices so that the left and right versions of a part are the same index
-    :type newIndexByOldIndex: dict
-    """
-
-    # Rewrite the label column with the right and left indicators removed
-    df['Label'] = newLabelList
-    # Rewrite the number for labels so that the right and left of a label are identified by the same number
-    df['No.'] = newIndexByOldIndex.values()
-
-
-def writeLookupTableToFile(df, LUT_outputName):
-    """Write the dataframe containing the lookup table to a tab separated file
-
-    :param df: the dataframe containing the lookup table
-    :type df: pandas.DataFrame
-    :param LUT_outputName: the name of the file to write the new lookup table
-    :type LUT_outputName: dict
-    """
-    # Write the dataframe to a file
-    df.to_csv(LUT_outputName, sep='\t', index=False)
-    print("Finished writting new lookup table")
-
-def rewriteImageIndices(imageFileName, imageOutputPath, newIndexByOldIndex):
-    """Rewrite the image so that its labels are identified by the new indices such that we have gotten rid of about half the indices
-
-    :param imageFileName: the name of the file in which the original image is found
-    :type imageFileName: str
-    :param imageOutputPath: the name of the file to which the new image is to be written
-    :type imageOutputPath: str
-    :param newIndexByOldIndex: the mapping of old indices to new indices
-    :type newIndexByOldIndex: str
-    """
-    # Get the image for which the labels will be rewritten
-    image = sitk.ReadImage(imageFileName)
-
-    # Alter the image so that its labels are referenced only by the new indices (get rid of half of the indices)
-    imageFilter = sitk.ChangeLabelImageFilter()
-    newImage = imageFilter.Execute(image, newIndexByOldIndex)
-    sitk.WriteImage(newImage, imageOutputPath)
-    print("Finished creating the recoded image")
-
+from lut_config.lut_utils import *
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -111,6 +9,9 @@ if __name__ == '__main__':
     parser.add_argument("-image_in", help="File path for the original image file")
     parser.add_argument("-image_out", help="File path for the output of the updated image file")
     args = parser.parse_args()
+
+    # VALID BAW INDEXES:  The are the only indexes found from BAW data processing
+    VALID_BAW_INDEXES = [0,1024,1025,1026,1027,4,5,1028,7,8,1029,10,11,12,13,1030,15,16,17,18,1035,14,1021,24,26,28,31,1019,43,44,46,47,49,50,51,52,53,54,58,60,1020,63,1031,2116,1032,1033,2129,1034,85,1116,98,1129,120,123,128,129,130,143,251,252,253,254,255,600,2032,15000,15001,2035,1005,15071,15072,15073,1006,1007,3005,1008,3006,3007,15140,15141,15142,15143,15144,15145,15150,15151,15156,15157,2027,15160,15161,15162,15163,15164,15165,15172,15173,15174,15175,15178,15179,4035,2000,15184,15185,2028,15190,15191,15192,15193,15194,15195,3019,2002,15200,15201,3021,3022,3023,3024,3025,2011,3029,5001,5002,3030,3031,4001,4002,4003,4005,4006,4007,4008,4009,4010,4011,4012,4013,4014,4015,4016,4017,4018,4019,4020,4021,4022,4023,4024,4025,3002,3001,4026,4029,4027,4028,3008,3003,4030,4031,4032,3009,3014,3015,4034,3012,4033,3010,3011,3013,3020,3016,3017,3018,3026,3027,3028,2005,2006,2007,2008,2009,2010,3033,2012,2013,3032,3034,3035,2014,2015,2016,2017,2018,2019,2021,2020,2025,2022,999,1000,2024,1002,2026,2029,1009,1010,2034,1012,2030,2031,2033,1016,1017,1018,1015,1011,1013,1022,1014]
 
     # Extract the command line arguments
     LUT_in = args.LUT_in    # File path for original lookup table for image labels
@@ -136,7 +37,26 @@ if __name__ == '__main__':
     newLabelList, newIndexByOldIndex = removeLeftRightExpressions(df)
 
     # Rewrite the dataframe for the new labels and indices
-    rewriteDataframe(df, newLabelList, newIndexByOldIndex)
+    df = rewriteDataframe(df, newLabelList, newIndexByOldIndex)
+
+    # print("{0}, {1}".format(newLabelList.shape, df2.shape))
+    # Filter only valid entries from the BAW workup
+    df = df.loc[df['No.'].isin(VALID_BAW_INDEXES)]
+    max_num_lbls = df.shape[0]
+
+    ## Now make condensed numbering scheme
+    map_nolr_condensed = dict()
+    col_index = df.columns.get_loc("No.")
+    for condensed_index in range(0,125):
+      no_lr_idx = df.iloc[condensed_index]['No.']
+      map_nolr_condensed[no_lr_idx] = condensed_index
+      df.iloc[condensed_index,col_index] = condensed_index
+
+    condensedNewIndexByOldIndex = dict()
+    for k,no_lr_idx in newIndexByOldIndex.items():
+        if no_lr_idx in VALID_BAW_INDEXES:
+          condensedNewIndexByOldIndex[k] = map_nolr_condensed[no_lr_idx]
+    del newIndexByOldIndex
 
     # Write the new lookup table to a file
     if LUT_out:
@@ -146,11 +66,11 @@ if __name__ == '__main__':
 
     # Write the new image to a file
     if image_in:
-        rewriteImageIndices(image_in, image_out, newIndexByOldIndex)
+        rewriteImageIndices(image_in, image_out, condensedNewIndexByOldIndex)
     else:
         print("Not creating a recoded image because no -image_in was specified")
 
-    print
+
 
 ################################################################
 # Three Example uses of this script
