@@ -22,7 +22,6 @@ from keras.utils import plot_model
 
 from keras.callbacks import TensorBoard
 
-
 import numpy as np
 
 lin = keras.Input(shape=(10,))
