@@ -27,7 +27,7 @@ package_check('numpy', '1.3', 'tutorial1')
 package_check('scipy', '0.7', 'tutorial1')
 # THIS IS NOT REQUIRED package_check('matplotlib','1.4','turorial1')
 package_check('networkx', '1.0', 'tutorial1')
-package_check('IPython', '0.10', 'tutorial1')
+#package_check('IPython', '0.10', 'tutorial1')
 
 from utilities.distributed import modify_qsub_args
 from utilities.image_processing import FixWMPartitioning
