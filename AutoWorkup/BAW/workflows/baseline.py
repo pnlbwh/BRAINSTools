@@ -289,12 +289,8 @@ def image_autounwrap(wrapped_inputfn, unwrapped_outputbasefn):
     return unwrapped_outputfn
 
 
-def generate_single_session_template_WF(projectid, subjectid, sessionid, onlyT1, hasPDs, hasFLs,master_config, phase, interpMode,
+def generate_single_session_template_WF(projectid, subjectid, sessionid, onlyT1, master_config, phase, interpMode,
                                         pipeline_name, doDenoise=True, badT2=False, useEMSP=False):
-    """
-    Run autoworkup on a single sessionid
-
-    This is the main function to call when processing a data set with T1 & T2
     """
     Run autoworkup on a single sessionid
 
@@ -709,26 +705,6 @@ def generate_single_session_template_WF(projectid, subjectid, sessionid, onlyT1,
             del dsName
             baw201.connect(outputsSpec, 't2_average', DataSinkTissueT2, 'TissueClassify.@t2')
 
-        if hasPDs:
-            dsName = "{0}_ds_{1}_tissue_pd".format(phase, sessionid)
-            DataSinkTissuePD = pe.Node(name=dsName, interface=nio.DataSink())
-            DataSinkTissuePD.overwrite = master_config['ds_overwrite']
-            DataSinkTissuePD.inputs.container = '{0}/{1}/{2}'.format(projectid, subjectid, sessionid)
-            DataSinkTissuePD.inputs.base_directory = master_config['resultdir']
-            #DataSinkTissuePD.inputs.ignore_exception = True
-            del dsName
-            baw201.connect(outputsSpec, 'pd_average', DataSinkTissuePD, 'TissueClassify.@pd')
-
-        if hasFLs:
-            dsName = "{0}_ds_{1}_tissue_fl".format(phase, sessionid)
-            DataSinkTissueFL = pe.Node(name=dsName, interface=nio.DataSink())
-            DataSinkTissueFL.overwrite = master_config['ds_overwrite']
-            DataSinkTissueFL.inputs.container = '{0}/{1}/{2}'.format(projectid, subjectid, sessionid)
-            DataSinkTissueFL.inputs.base_directory = master_config['resultdir']
-            #DataSinkTissueFL.inputs.ignore_exception = True
-            del dsName
-            baw201.connect(outputsSpec, 'fl_average', DataSinkTissueFL, 'TissueClassify.@fl')
-
 
         currentFixWMPartitioningName = "_".join(['FixWMPartitioning', str(subjectid), str(sessionid)])
         FixWMNode = pe.Node(interface=Function(function=FixWMPartitioning,
@@ -1007,17 +983,17 @@ def generate_single_session_template_WF(projectid, subjectid, sessionid, onlyT1,
         baw201.connect( inputLabelFileJointFusionnameSpec, 'labelBaseFilename',
                         myLocalJointFusion, 'inputspec.labelBaseFilename')
 
-        #baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_label',DataSink,'JointFusion.@JointFusion_HDAtlas20_2015_label')
-        #baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_CSFVBInjected_label',DataSink,'JointFusion.@JointFusion_HDAtlas20_2015_CSFVBInjected_label')
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_fs_standard_label',DataSink,'JointFusion.@JointFusion_HDAtlas20_2015_fs_standard_label')
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_lobe_label',DataSink,'JointFusion.@JointFusion_HDAtlas20_2015_lobe_label')
-        #baw201.connect(myLocalJointFusion,'outputspec.JointFusion_extended_snapshot',DataSink,'JointFusion.@JointFusion_extended_snapshot')
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_dustCleaned_label', DataSink, 'JointFusion.@JointFusion_HDAtlas20_2015_dustCleaned_label')
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2016_intensityVolumes', DataSink, 'JointFusion.@JointFusion_HDAtlas20_2016_intensityVolumes')
+        #baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_label',DataSinkSegmentation,'JointFusion.@JointFusion_HDAtlas20_2015_label')
+        #baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_CSFVBInjected_label',DataSinkSegmentation,'JointFusion.@JointFusion_HDAtlas20_2015_CSFVBInjected_label')
+        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_fs_standard_label',DataSinkSegmentation,'JointFusion.@JointFusion_HDAtlas20_2015_fs_standard_label')
+        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_lobe_label',DataSinkSegmentation,'JointFusion.@JointFusion_HDAtlas20_2015_lobe_label')
+        #baw201.connect(myLocalJointFusion,'outputspec.JointFusion_extended_snapshot',DataSinkSegmentation,'JointFusion.@JointFusion_extended_snapshot')
+        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2015_dustCleaned_label', DataSinkSegmentation, 'JointFusion.@JointFusion_HDAtlas20_2015_dustCleaned_label')
+        #baw201.connect(myLocalJointFusion,'outputspec.JointFusion_HDAtlas20_2016_intensityVolumes', DataSinkSegmentation, 'JointFusion.@:ointFusion_HDAtlas20_2016_intensityVolumes')
 
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_volumes_csv', DataSink, 'JointFusion.allVol.@JointFusion_volumesCSV')
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_volumes_json', DataSink, 'JointFusion.allVol.@JointFusion_volumesJSON')
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_lobe_volumes_csv', DataSink, 'JointFusion.lobeVol.@JointFusion_lobe_volumesCSV')
-        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_lobe_volumes_json', DataSink, 'JointFusion.lobeVol.@JointFusion_lobe_volumesJSON')
+        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_volumes_csv', DataSinkSegmentation, 'JointFusion.allVol.@JointFusion_volumesCSV')
+        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_volumes_json', DataSinkSegmentation, 'JointFusion.allVol.@JointFusion_volumesJSON')
+        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_lobe_volumes_csv', DataSinkSegmentation, 'JointFusion.lobeVol.@JointFusion_lobe_volumesCSV')
+        baw201.connect(myLocalJointFusion,'outputspec.JointFusion_lobe_volumes_json', DataSinkSegmentation, 'JointFusion.lobeVol.@JointFusion_lobe_volumesJSON')
 
     return baw201

@@ -210,7 +210,8 @@ def CreateJointFusionWorkflow(WFname, onlyT1, master_config, runFixFusionLabelMa
             fields=['t1', 't2', 'label', 'lmks', 'registration_mask']),
             name='jointFusionAtlasInput' + jointFusion_atlas_subject)
         jointFusionAtlases[jointFusion_atlas_subject].inputs.t1 = jointFusionAtlasDict[jointFusion_atlas_subject]['t1']
-        jointFusionAtlases[jointFusion_atlas_subject].inputs.t2 = jointFusionAtlasDict[jointFusion_atlas_subject]['t2']
+        if not onlyT1:
+            jointFusionAtlases[jointFusion_atlas_subject].inputs.t2 = jointFusionAtlasDict[jointFusion_atlas_subject]['t2']
         jointFusionAtlases[jointFusion_atlas_subject].inputs.label = jointFusionAtlasDict[jointFusion_atlas_subject][
             'label']
         jointFusionAtlases[jointFusion_atlas_subject].inputs.lmks = jointFusionAtlasDict[jointFusion_atlas_subject][
